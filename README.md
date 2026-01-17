@@ -14,7 +14,7 @@ A simple, mobile-friendly calculator for sourdough starter feeding ratios.
 
 ## Usage
 
-Visit the live calculator at: [Your GitHub Pages URL will be here]
+Visit the live calculator at: https://wandak925.github.io/sourdough-calculator/
 
 ## Settings
 
