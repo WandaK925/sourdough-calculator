@@ -118,6 +118,39 @@
             margin-bottom: 30px;
         }
 
+        .main-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .main-tab {
+            flex: 1;
+            padding: 14px 10px;
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .main-tab.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .main-content {
+            display: none;
+        }
+
+        .main-content.active {
+            display: block;
+        }
+
         .mode-tabs {
             display: flex;
             gap: 10px;
@@ -268,12 +301,18 @@
     <div class="container">
         <h1>Sourdough Starter Calculator</h1>
 
-        <div class="calculator-section">
-            <h2>Calculator</h2>
-            <div class="mode-tabs">
-                <button class="mode-tab active" onclick="switchMode('target')">Target Amount Mode</button>
-                <button class="mode-tab" onclick="switchMode('feeding')">Feeding Mode</button>
-            </div>
+        <div class="main-tabs">
+            <button class="main-tab active" onclick="switchMainTab('calculator')">Calculator</button>
+            <button class="main-tab" onclick="switchMainTab('containers')">Container Weights</button>
+        </div>
+
+        <div id="calculatorTab" class="main-content active">
+            <div class="calculator-section">
+                <h2>Calculator</h2>
+                <div class="mode-tabs">
+                    <button class="mode-tab active" onclick="switchMode('target')">Target Amount Mode</button>
+                    <button class="mode-tab" onclick="switchMode('feeding')">Feeding Mode</button>
+                </div>
 
             <div id="targetMode" class="mode-content active">
                 <div class="input-group">
@@ -319,32 +358,48 @@
                 <input type="number" id="hydration" value="100" min="1" step="1">
             </div>
         </div>
+        </div>
 
-        <div class="jar-reference">
-            <h2>Jar Weights Reference</h2>
-            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">Save jar weights for easy reference when you forget to tare your scale.</p>
-            <div class="jar-add-form">
-                <input type="text" id="jarLabel" placeholder="Jar name (e.g., Mason Jar)">
-                <input type="number" id="jarWeight" placeholder="Weight (grams)" min="0" step="1">
-                <button class="btn" onclick="addJar()">Add Jar</button>
+        <div id="containersTab" class="main-content">
+            <div class="jar-reference">
+                <h2>Container Weights</h2>
+                <p style="color: #666; margin-bottom: 15px; font-size: 14px;">Save container weights for easy reference when you forget to tare your scale.</p>
+                <div class="jar-add-form">
+                    <input type="text" id="jarLabel" placeholder="Container name (e.g., Mason Jar)">
+                    <input type="number" id="jarWeight" placeholder="Weight (grams)" min="0" step="1">
+                    <button class="btn" onclick="addJar()">Add Container</button>
+                </div>
+                <div class="jar-list" id="jarList"></div>
             </div>
-            <div class="jar-list" id="jarList"></div>
         </div>
     </div>
 
     <script>
         let jars = JSON.parse(localStorage.getItem('jars')) || [];
 
+        function switchMainTab(tab) {
+            document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.main-content').forEach(content => content.classList.remove('active'));
+
+            if (tab === 'calculator') {
+                document.querySelector('.main-tab:first-child').classList.add('active');
+                document.getElementById('calculatorTab').classList.add('active');
+            } else {
+                document.querySelector('.main-tab:last-child').classList.add('active');
+                document.getElementById('containersTab').classList.add('active');
+            }
+        }
+
         function switchMode(mode) {
             document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.mode-content').forEach(content => content.classList.remove('active'));
 
-            if (mode === 'feeding') {
+            if (mode === 'target') {
                 document.querySelector('.mode-tab:first-child').classList.add('active');
-                document.getElementById('feedingMode').classList.add('active');
+                document.getElementById('targetMode').classList.add('active');
             } else {
                 document.querySelector('.mode-tab:last-child').classList.add('active');
-                document.getElementById('targetMode').classList.add('active');
+                document.getElementById('feedingMode').classList.add('active');
             }
         }
 
@@ -431,7 +486,7 @@
         }
 
         function resetSettings() {
-            if (confirm('Reset all settings and clear jar weights? This cannot be undone.')) {
+            if (confirm('Reset all settings and clear container weights? This cannot be undone.')) {
                 // Reset ratio inputs
                 document.getElementById('ratioStarter').value = '1';
                 document.getElementById('ratioFlour').value = '4';
@@ -446,7 +501,7 @@
                 document.getElementById('feedingResults').innerHTML = '';
                 document.getElementById('targetResults').innerHTML = '';
 
-                // Clear jars
+                // Clear containers
                 jars = [];
                 localStorage.removeItem('jars');
                 renderJars();
@@ -481,7 +536,7 @@
             const jarList = document.getElementById('jarList');
 
             if (jars.length === 0) {
-                jarList.innerHTML = '<div class="empty-state">No jars saved yet</div>';
+                jarList.innerHTML = '<div class="empty-state">No containers saved yet</div>';
                 return;
             }
 
