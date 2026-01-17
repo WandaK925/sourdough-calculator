@@ -289,6 +289,35 @@
             background-color: #c0392b;
         }
 
+        .btn-delete-circle {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            padding: 0;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.1s;
+            flex-shrink: 0;
+        }
+
+        .btn-delete-circle:hover {
+            background-color: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .btn-delete-circle:active {
+            transform: scale(0.95);
+        }
+
         .empty-state {
             text-align: center;
             color: #999;
@@ -543,9 +572,9 @@
             jarList.innerHTML = jars.map((jar, index) => `
                 <div class="jar-item">
                     <span><strong>${jar.label}</strong></span>
-                    <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="font-weight: 600;">${jar.weight} g</span>
-                        <button class="btn btn-small btn-delete" onclick="deleteJar(${index})">Delete</button>
+                        <button class="btn-delete-circle" onclick="deleteJar(${index})" aria-label="Delete ${jar.label}">×</button>
                     </div>
                 </div>
             `).join('');
