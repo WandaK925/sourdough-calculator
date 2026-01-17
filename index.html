@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sourdough Starter Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #1a1a2e;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                padding: 30px;
+            }
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.6em;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #3498db;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+
+        .settings-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .ratio-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .calculator-section {
+            margin-bottom: 30px;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 12px 8px;
+            background-color: #e8f4f8;
+            border: 2px solid #d4e8f1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .mode-tab.active {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+            border-color: #3498db;
+        }
+
+        .mode-content {
+            display: none;
+        }
+
+        .mode-content.active {
+            display: block;
+        }
+
+        .results {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f0f4ff 100%);
+            border: 3px solid #3498db;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .results-note {
+            font-size: 12px;
+            color: #5a6c7d;
+            margin-bottom: 12px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .result-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .jar-reference {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .jar-list {
+            margin-top: 15px;
+        }
+
+        .jar-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .jar-add-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .jar-add-form input {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sourdough Starter Calculator</h1>
+
+        <div class="calculator-section">
+            <h2>Calculator</h2>
+            <div class="mode-tabs">
+                <button class="mode-tab active" onclick="switchMode('feeding')">Feeding Mode</button>
+                <button class="mode-tab" onclick="switchMode('target')">Target Amount Mode</button>
+            </div>
+
+            <div id="feedingMode" class="mode-content active">
+                <div class="input-group">
+                    <label>I have this much starter (grams):</label>
+                    <input type="number" id="currentStarter" value="" min="0" step="1" placeholder="Enter starter amount" oninput="calculateFeeding()">
+                </div>
+                <div id="feedingResults"></div>
+            </div>
+
+            <div id="targetMode" class="mode-content">
+                <div class="input-group">
+                    <label>I need this much total starter (grams):</label>
+                    <input type="number" id="targetAmount" value="" min="0" step="1" placeholder="Enter target amount" oninput="calculateTarget()">
+                </div>
+                <div id="targetResults"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h2>Settings</h2>
+            <div class="input-group">
+                <label>Feeding Ratio (Starter : Flour : Water)</label>
+                <div class="ratio-inputs">
+                    <div>
+                        <input type="number" id="ratioStarter" value="1" min="0.1" step="0.1" oninput="recalculate()">
+                        <label style="margin-top: 5px; font-size: 12px; font-weight: 400; text-align: center;">Starter</label>
+                    </div>
+                    <div>
+                        <input type="number" id="ratioFlour" value="4" min="0.1" step="0.1" oninput="recalculate()">
+                        <label style="margin-top: 5px; font-size: 12px; font-weight: 400; text-align: center;">Flour</label>
+                    </div>
+                    <div>
+                        <input type="number" id="ratioWater" value="4" min="0.1" step="0.1" oninput="recalculate()">
+                        <label style="margin-top: 5px; font-size: 12px; font-weight: 400; text-align: center;">Water</label>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Starter Hydration (%)</label>
+                <input type="number" id="hydration" value="100" min="1" step="1">
+            </div>
+        </div>
+
+        <div class="jar-reference">
+            <h2>Jar Weights Reference</h2>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">Save jar weights for easy reference when you forget to tare your scale.</p>
+            <div class="jar-add-form">
+                <input type="text" id="jarLabel" placeholder="Jar name (e.g., Mason Jar)">
+                <input type="number" id="jarWeight" placeholder="Weight (grams)" min="0" step="1">
+                <button class="btn" onclick="addJar()">Add Jar</button>
+            </div>
+            <div class="jar-list" id="jarList"></div>
+        </div>
+    </div>
+
+    <script>
+        let jars = JSON.parse(localStorage.getItem('jars')) || [];
+
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.mode-content').forEach(content => content.classList.remove('active'));
+
+            if (mode === 'feeding') {
+                document.querySelector('.mode-tab:first-child').classList.add('active');
+                document.getElementById('feedingMode').classList.add('active');
+            } else {
+                document.querySelector('.mode-tab:last-child').classList.add('active');
+                document.getElementById('targetMode').classList.add('active');
+            }
+        }
+
+        function calculateFeeding() {
+            const currentStarter = parseFloat(document.getElementById('currentStarter').value);
+            const ratioStarter = parseFloat(document.getElementById('ratioStarter').value);
+            const ratioFlour = parseFloat(document.getElementById('ratioFlour').value);
+            const ratioWater = parseFloat(document.getElementById('ratioWater').value);
+
+            if (!currentStarter || currentStarter <= 0) {
+                document.getElementById('feedingResults').innerHTML = '';
+                return;
+            }
+
+            const flourToAdd = (currentStarter / ratioStarter) * ratioFlour;
+            const waterToAdd = (currentStarter / ratioStarter) * ratioWater;
+            const totalStarter = currentStarter + flourToAdd + waterToAdd;
+
+            document.getElementById('feedingResults').innerHTML = `
+                <div class="results">
+                    <div class="results-note">Using ratio ${ratioStarter}:${ratioFlour}:${ratioWater} (see Settings below)</div>
+                    <div class="result-item">
+                        <span class="result-label">Starter (existing)</span>
+                        <span class="result-value">${Math.round(currentStarter)} g</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Flour (to add)</span>
+                        <span class="result-value">${Math.round(flourToAdd)} g</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Water (to add)</span>
+                        <span class="result-value">${Math.round(waterToAdd)} g</span>
+                    </div>
+                    <div class="result-item" style="background: linear-gradient(135deg, #d4edda 0%, #e8f5e9 100%); border: 2px solid #3498db;">
+                        <span class="result-label">Total Fed Starter</span>
+                        <span class="result-value">${Math.round(totalStarter)} g</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateTarget() {
+            const targetAmount = parseFloat(document.getElementById('targetAmount').value);
+            const ratioStarter = parseFloat(document.getElementById('ratioStarter').value);
+            const ratioFlour = parseFloat(document.getElementById('ratioFlour').value);
+            const ratioWater = parseFloat(document.getElementById('ratioWater').value);
+
+            if (!targetAmount || targetAmount <= 0) {
+                document.getElementById('targetResults').innerHTML = '';
+                return;
+            }
+
+            const totalRatio = ratioStarter + ratioFlour + ratioWater;
+            const starterNeeded = (targetAmount / totalRatio) * ratioStarter;
+            const flourNeeded = (targetAmount / totalRatio) * ratioFlour;
+            const waterNeeded = (targetAmount / totalRatio) * ratioWater;
+
+            document.getElementById('targetResults').innerHTML = `
+                <div class="results">
+                    <div class="results-note">Using ratio ${ratioStarter}:${ratioFlour}:${ratioWater} (see Settings below)</div>
+                    <div class="result-item">
+                        <span class="result-label">Starter</span>
+                        <span class="result-value">${Math.round(starterNeeded)} g</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Flour</span>
+                        <span class="result-value">${Math.round(flourNeeded)} g</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Water</span>
+                        <span class="result-value">${Math.round(waterNeeded)} g</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function recalculate() {
+            // Recalculate whichever mode is currently active
+            if (document.getElementById('feedingMode').classList.contains('active')) {
+                calculateFeeding();
+            } else {
+                calculateTarget();
+            }
+        }
+
+        function addJar() {
+            const label = document.getElementById('jarLabel').value.trim();
+            const weight = parseFloat(document.getElementById('jarWeight').value);
+
+            if (!label || !weight || weight <= 0) {
+                alert('Please enter both jar name and weight.');
+                return;
+            }
+
+            jars.push({ label, weight });
+            localStorage.setItem('jars', JSON.stringify(jars));
+            document.getElementById('jarLabel').value = '';
+            document.getElementById('jarWeight').value = '';
+            renderJars();
+        }
+
+        function deleteJar(index) {
+            jars.splice(index, 1);
+            localStorage.setItem('jars', JSON.stringify(jars));
+            renderJars();
+        }
+
+        function renderJars() {
+            const jarList = document.getElementById('jarList');
+
+            if (jars.length === 0) {
+                jarList.innerHTML = '<div class="empty-state">No jars saved yet</div>';
+                return;
+            }
+
+            jarList.innerHTML = jars.map((jar, index) => `
+                <div class="jar-item">
+                    <span><strong>${jar.label}</strong></span>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="font-weight: 600;">${jar.weight} g</span>
+                        <button class="btn btn-small btn-delete" onclick="deleteJar(${index})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderJars();
+    </script>
+</body>
+</html>
