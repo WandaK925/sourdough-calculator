@@ -60,6 +60,29 @@
             border: 1px solid #e1e8ed;
         }
 
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+
+        .btn-reset {
+            padding: 8px 16px;
+            background-color: #95a5a6;
+            font-size: 14px;
+        }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+        }
+
         .input-group {
             margin-bottom: 20px;
         }
@@ -270,7 +293,10 @@
         </div>
 
         <div class="settings-section">
-            <h2>Settings</h2>
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button class="btn btn-reset btn-small" onclick="resetSettings()">Reset All</button>
+            </div>
             <div class="input-group">
                 <label>Feeding Ratio (Starter : Flour : Water)</label>
                 <div class="ratio-inputs">
@@ -401,6 +427,31 @@
                 calculateFeeding();
             } else {
                 calculateTarget();
+            }
+        }
+
+        function resetSettings() {
+            if (confirm('Reset all settings and clear jar weights? This cannot be undone.')) {
+                // Reset ratio inputs
+                document.getElementById('ratioStarter').value = '1';
+                document.getElementById('ratioFlour').value = '4';
+                document.getElementById('ratioWater').value = '4';
+                document.getElementById('hydration').value = '100';
+
+                // Clear calculator inputs
+                document.getElementById('currentStarter').value = '';
+                document.getElementById('targetAmount').value = '';
+
+                // Clear results
+                document.getElementById('feedingResults').innerHTML = '';
+                document.getElementById('targetResults').innerHTML = '';
+
+                // Clear jars
+                jars = [];
+                localStorage.removeItem('jars');
+                renderJars();
+
+                alert('All settings have been reset to defaults.');
             }
         }
 
