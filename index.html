@@ -571,12 +571,6 @@
             renderJars();
         }
 
-        function deleteJar(index) {
-            jars.splice(index, 1);
-            localStorage.setItem('jars', JSON.stringify(jars));
-            renderJars();
-        }
-
         function renderJars() {
             const jarList = document.getElementById('jarList');
 
