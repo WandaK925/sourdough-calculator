@@ -342,7 +342,7 @@
         <div class="settings-section">
             <h2>Settings</h2>
             <div class="input-group">
-                <label>Feeding Ratio (Starter : Flour : Water)</label>
+                <label>Feeding Ratio</label>
                 <div class="ratio-inputs">
                     <div>
                         <input type="number" id="ratioStarter" value="1" min="0.1" step="0.1" oninput="recalculate()">
@@ -357,10 +357,6 @@
                         <label style="margin-top: 5px; font-size: 12px; font-weight: 400; text-align: center;">Water</label>
                     </div>
                 </div>
-            </div>
-            <div class="input-group">
-                <label>Starter Hydration (%)</label>
-                <input type="number" id="hydration" value="100" min="1" step="1">
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
                 <button class="btn btn-save btn-small" onclick="saveDefaults()">Save as Default</button>
@@ -390,8 +386,7 @@
         const FACTORY_DEFAULTS = {
             ratioStarter: 1,
             ratioFlour: 4,
-            ratioWater: 4,
-            hydration: 100
+            ratioWater: 4
         };
 
         // Load saved defaults or use factory defaults
@@ -406,7 +401,6 @@
             document.getElementById('ratioStarter').value = defaults.ratioStarter;
             document.getElementById('ratioFlour').value = defaults.ratioFlour;
             document.getElementById('ratioWater').value = defaults.ratioWater;
-            document.getElementById('hydration').value = defaults.hydration;
         }
 
         function switchMainTab(tab) {
@@ -521,8 +515,7 @@
             const currentSettings = {
                 ratioStarter: parseFloat(document.getElementById('ratioStarter').value),
                 ratioFlour: parseFloat(document.getElementById('ratioFlour').value),
-                ratioWater: parseFloat(document.getElementById('ratioWater').value),
-                hydration: parseFloat(document.getElementById('hydration').value)
+                ratioWater: parseFloat(document.getElementById('ratioWater').value)
             };
 
             localStorage.setItem('defaultSettings', JSON.stringify(currentSettings));
@@ -536,7 +529,6 @@
                 document.getElementById('ratioStarter').value = defaults.ratioStarter;
                 document.getElementById('ratioFlour').value = defaults.ratioFlour;
                 document.getElementById('ratioWater').value = defaults.ratioWater;
-                document.getElementById('hydration').value = defaults.hydration;
 
                 // Clear calculator inputs
                 document.getElementById('currentStarter').value = '';
