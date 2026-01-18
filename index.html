@@ -530,7 +530,7 @@
         }
 
         function resetSettings() {
-            if (confirm('Reset all settings and clear container weights? This cannot be undone.')) {
+            if (confirm('Reset settings to defaults? This cannot be undone.')) {
                 // Load saved defaults (or factory defaults if none saved)
                 const defaults = loadDefaults();
                 document.getElementById('ratioStarter').value = defaults.ratioStarter;
@@ -546,12 +546,7 @@
                 document.getElementById('feedingResults').innerHTML = '';
                 document.getElementById('targetResults').innerHTML = '';
 
-                // Clear containers
-                jars = [];
-                localStorage.removeItem('jars');
-                renderJars();
-
-                alert('All settings have been reset to your saved defaults.');
+                alert('Settings have been reset to your saved defaults.');
             }
         }
 
@@ -568,6 +563,12 @@
             localStorage.setItem('jars', JSON.stringify(jars));
             document.getElementById('jarLabel').value = '';
             document.getElementById('jarWeight').value = '';
+            renderJars();
+        }
+        
+        function deleteJar(index) {
+            jars.splice(index, 1);
+            localStorage.setItem('jars', JSON.stringify(jars));
             renderJars();
         }
 
